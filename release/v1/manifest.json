@@ -1,0 +1,7 @@
+{
+  "_note": "This file is a placeholder. Run: python main.py corpus build-release v1",
+  "manifest_version": "1.0",
+  "coc_version": "v3",
+  "release_id": "v1",
+  "status": "not_built"
+}

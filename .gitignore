@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+var/
+tmp/
+cache/
+
+# Training outputs
+checkpoints/
+runs/
+tensorboard/
+wandb/
+
+# Large datasets
+Datasets/
+corpus_warehouse/raw/
+corpus_warehouse/processed/
+corpus_warehouse/releases/
+
+# Model files
+*.gguf
+*.bin
+*.pt
+*.pth
+*.safetensors
+
+# OS
+Thumbs.db
+.DS_Store

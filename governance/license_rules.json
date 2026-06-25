@@ -1,0 +1,221 @@
+{
+  "_comment": "CognitiveOC v3 Licence Risk Matrix. risk_score: 0.0 = fully safe, 1.0 = hard exclude.",
+  "_version": "1.0",
+  "_last_updated": "2026-06-23",
+  "rules": [
+    {
+      "licence_id": "pd",
+      "display_name": "Public Domain",
+      "patterns": ["public domain", "pd", "no rights reserved"],
+      "risk_score": 0.0,
+      "training_use": "yes",
+      "attribution_required": false,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Ideal. No restrictions whatsoever."
+    },
+    {
+      "licence_id": "cc0",
+      "display_name": "CC0 1.0 Universal",
+      "patterns": ["cc0", "cc-zero", "creative commons zero"],
+      "risk_score": 0.0,
+      "training_use": "yes",
+      "attribution_required": false,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Explicit public domain dedication. Equivalent to PD."
+    },
+    {
+      "licence_id": "apache2",
+      "display_name": "Apache 2.0",
+      "patterns": ["apache 2", "apache-2.0", "apache license 2"],
+      "risk_score": 0.1,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Permissive. Record attribution in manifest."
+    },
+    {
+      "licence_id": "mit",
+      "display_name": "MIT License",
+      "patterns": ["mit license", "mit licence", "the mit"],
+      "risk_score": 0.1,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Permissive. Record attribution in manifest."
+    },
+    {
+      "licence_id": "bsd3",
+      "display_name": "BSD 3-Clause",
+      "patterns": ["bsd 3", "bsd-3", "bsd3", "new bsd"],
+      "risk_score": 0.1,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Permissive. Record attribution in manifest."
+    },
+    {
+      "licence_id": "cc-by-4",
+      "display_name": "CC BY 4.0",
+      "patterns": ["cc by 4", "cc-by-4.0", "creative commons attribution 4"],
+      "risk_score": 0.1,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Attribution required in release manifest."
+    },
+    {
+      "licence_id": "cc-by-sa-4",
+      "display_name": "CC BY-SA 4.0",
+      "patterns": ["cc by-sa 4", "cc-by-sa-4.0", "creative commons attribution-sharealike 4"],
+      "risk_score": 0.2,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": true,
+      "notes": "SA means derivative works (e.g. the trained model) must also be CC-BY-SA or compatible. For a private/non-commercial model: acceptable. Document clearly."
+    },
+    {
+      "licence_id": "cc-by-30",
+      "display_name": "CC BY 3.0",
+      "patterns": ["cc by 3", "cc-by-3.0", "creative commons attribution 3"],
+      "risk_score": 0.1,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Older version; same acceptable risk as CC BY 4.0."
+    },
+    {
+      "licence_id": "cc-by-sa-30",
+      "display_name": "CC BY-SA 3.0",
+      "patterns": ["cc by-sa 3", "cc-by-sa-3.0", "creative commons attribution-sharealike 3"],
+      "risk_score": 0.2,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": true,
+      "notes": "Same treatment as CC BY-SA 4.0."
+    },
+    {
+      "licence_id": "cc-by-nc-4",
+      "display_name": "CC BY-NC 4.0",
+      "patterns": ["cc by-nc 4", "cc-by-nc-4.0", "creative commons attribution-noncommercial 4"],
+      "risk_score": 0.3,
+      "training_use": "yes_nc_only",
+      "attribution_required": true,
+      "nc_restriction": true,
+      "sa_restriction": false,
+      "notes": "Non-commercial restriction. COC v3 is non-commercial private research. Confirm before any distribution of model weights."
+    },
+    {
+      "licence_id": "cc-by-nc-sa-4",
+      "display_name": "CC BY-NC-SA 4.0",
+      "patterns": ["cc by-nc-sa 4", "cc-by-nc-sa-4.0", "creative commons attribution-noncommercial-sharealike 4"],
+      "risk_score": 0.4,
+      "training_use": "yes_nc_only",
+      "attribution_required": true,
+      "nc_restriction": true,
+      "sa_restriction": true,
+      "notes": "Both NC and SA restrictions. Acceptable for private non-commercial use only. Needs human review."
+    },
+    {
+      "licence_id": "cc-by-nd",
+      "display_name": "CC BY-ND (any version)",
+      "patterns": ["cc by-nd", "cc-by-nd", "noderivatives", "no derivatives"],
+      "risk_score": 0.5,
+      "training_use": "training_use_ok_no_redistribution",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "ND prohibits derivative redistribution, NOT training use. Training a model on ND text is legally distinct from redistributing the text. REQUIRES human review."
+    },
+    {
+      "licence_id": "gpl2",
+      "display_name": "GPL v2",
+      "patterns": ["gpl-2", "gpl v2", "gnu general public license v2"],
+      "risk_score": 0.3,
+      "training_use": "prose_only",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": true,
+      "notes": "Use prose documentation only, not code. The GPL copyleft is triggered by code distribution, not prose training data."
+    },
+    {
+      "licence_id": "gpl3",
+      "display_name": "GPL v3",
+      "patterns": ["gpl-3", "gpl v3", "gnu general public license v3"],
+      "risk_score": 0.3,
+      "training_use": "prose_only",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": true,
+      "notes": "Same treatment as GPL v2 for prose documentation."
+    },
+    {
+      "licence_id": "psf",
+      "display_name": "PSF License",
+      "patterns": ["psf", "python software foundation", "psfl"],
+      "risk_score": 0.1,
+      "training_use": "yes",
+      "attribution_required": true,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "Permissive. Covers Python documentation."
+    },
+    {
+      "licence_id": "unknown",
+      "display_name": "Unknown / No Licence Stated",
+      "patterns": ["unknown", "no licence", "no license", "unlicensed"],
+      "risk_score": 0.8,
+      "training_use": "human_review_required",
+      "attribution_required": false,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "High risk. Must be manually verified. Do not include in release without explicit approval."
+    },
+    {
+      "licence_id": "all-rights-reserved",
+      "display_name": "All Rights Reserved / Copyright",
+      "patterns": ["all rights reserved", "copyright", "©", "proprietary"],
+      "risk_score": 1.0,
+      "training_use": "no",
+      "attribution_required": false,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "HARD REJECT. No exceptions unless explicit written permission from rights holder is on file."
+    },
+    {
+      "licence_id": "tos-violation",
+      "display_name": "Terms of Service Violation",
+      "patterns": ["tos", "terms of service", "scraping prohibited"],
+      "risk_score": 1.0,
+      "training_use": "no",
+      "attribution_required": false,
+      "nc_restriction": false,
+      "sa_restriction": false,
+      "notes": "HARD REJECT. Regardless of text quality. Includes news agency content, social media scraped without permission, proprietary vendor APIs."
+    }
+  ],
+  "hard_rejects": [
+    "Any post-1927 book without explicit CC or PD declaration",
+    "News agency content (Reuters, AP, BBC, Bloomberg, WSJ) — ToS prohibits training use",
+    "Proprietary vendor documentation (AWS, Azure, GCP, Salesforce) — ToS prohibits",
+    "GPT-4, ChatGPT, Gemini, Claude generated outputs as training data",
+    "Social media content (Twitter/X, Reddit, Facebook, Instagram) — ToS + licence risk",
+    "SEO content farms — quality reject",
+    "Z-Library, Sci-Hub, Anna's Archive sourced materials — legally compromised",
+    "Any dataset where provenance is unknown and cannot be verified"
+  ],
+  "warehouse_only": [
+    "CC-BY-NC sources where commercial use cannot be confirmed excluded",
+    "ShareGPT conversations — pending licence review",
+    "S2ORC (CC-BY-NC-2.0) — NC clause; warehouse-only until non-commercial use confirmed for release",
+    "BIG-Bench raw without per-task curation"
+  ]
+}

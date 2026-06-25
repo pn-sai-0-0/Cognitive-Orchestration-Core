@@ -1,0 +1,27 @@
+# Project Gutenberg IDs for seed download.
+# One numeric ID per line. Lines starting with # are ignored.
+1342
+84
+11
+1661
+2701
+98
+76
+46
+1952
+2600
+5200
+4300
+1400
+219
+6130
+2814
+2554
+1497
+2542
+1080
+1228
+36
+174
+345
+1232
