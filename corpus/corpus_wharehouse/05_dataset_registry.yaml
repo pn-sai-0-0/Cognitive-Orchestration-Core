@@ -1,0 +1,79 @@
+# =====================================================================
+# CognitiveOC Dataset Registry (YAML mirror for audit/governance)
+# =====================================================================
+# This is the human-readable mirror of the registry embedded in
+# 02_corpus_acquisition_manager.py. The Python script is the source
+# of truth; this YAML is for audit/review.
+#
+# Risk: 0.0=zero, 0.1=very low, 0.2=low, 0.3+=moderate/high
+# Priority: 1=must-have, 2=recommended, 3=optional
+# =====================================================================
+
+registry_version: 2.0
+last_audited: "2026-06-25"
+audit_policy: zero_license_risk
+
+sources:
+  # D. Conversations
+  - {key: oasst2, kind: hf, hf_id: OpenAssistant/oasst2, category: D, subdir: oasst2, license: Apache-2.0, risk: 0.0, priority: 1, tokens: "~150M"}
+  - {key: dolly15k, kind: hf, hf_id: databricks/databricks-dolly-15k, category: D, subdir: dolly15k, license: CC-BY-SA-3.0, risk: 0.1, priority: 1, tokens: "~10M"}
+
+  # C. Reasoning
+  - {key: numinamath_cot, kind: hf, hf_id: AI-MO/NuminaMath-CoT, category: C, subdir: numinamath_cot, license: Apache-2.0, risk: 0.0, priority: 1, tokens: "~200M"}
+  - {key: arc_challenge, kind: hf, hf_id: allenai/ai2_arc, hf_config: ARC-Challenge, category: C, subdir: arc_challenge, license: CC-BY-SA-4.0, risk: 0.1, priority: 1, tokens: "~2M"}
+  - {key: arc_easy, kind: hf, hf_id: allenai/ai2_arc, hf_config: ARC-Easy, category: C, subdir: arc_easy, license: CC-BY-SA-4.0, risk: 0.1, priority: 1, tokens: "~3M"}
+  - {key: gsm8k, kind: hf, hf_id: openai/gsm8k, hf_config: main, category: C, subdir: gsm8k, license: MIT, risk: 0.0, priority: 1, tokens: "~3M"}
+  - {key: math_lighteval, kind: hf, hf_id: lighteval/MATH, category: C, subdir: math_dataset, license: MIT, risk: 0.0, priority: 1, tokens: "~10M"}
+  - {key: openwebmath, kind: hf, hf_id: open-web-math/open-web-math, category: C, subdir: openwebmath, license: ODC-By-1.0, risk: 0.2, priority: 1, tokens: "~14.7B"}
+  - {key: proof_pile_2, kind: hf, hf_id: EleutherAI/proof-pile-2, category: C, subdir: proof_pile_2, license: Mixed, risk: 0.2, priority: 2, tokens: "~55B"}
+  - {key: metamathqa, kind: hf, hf_id: meta-math/MetaMathQA, category: C, subdir: metamathqa, license: MIT, risk: 0.0, priority: 1, tokens: "~400M"}
+  - {key: strategyqa, kind: hf, hf_id: ChilleD/StrategyQA, category: C, subdir: strategyqa, license: MIT, risk: 0.0, priority: 2, tokens: "~1M"}
+  - {key: winogrande, kind: hf, hf_id: allenai/winogrande, hf_config: winogrande_xl, category: C, subdir: winogrande, license: CC-BY, risk: 0.1, priority: 2, tokens: "~5M"}
+
+  # J. Retrieval
+  - {key: hotpotqa, kind: hf, hf_id: hotpotqa/hotpot_qa, hf_config: distractor, category: J, subdir: hotpotqa, license: CC-BY-SA-4.0, risk: 0.1, priority: 1, tokens: "~50M"}
+  - {key: trivia_qa, kind: hf, hf_id: mandarjoshi/trivia_qa, hf_config: rc, category: J, subdir: trivia_qa, license: Apache-2.0, risk: 0.0, priority: 1, tokens: "~100M"}
+  - {key: natural_questions, kind: hf, hf_id: google-research-datasets/natural_questions, category: J, subdir: natural_questions, license: CC-BY-SA-3.0, risk: 0.1, priority: 2, tokens: "~300M"}
+  - {key: fever, kind: hf, hf_id: fever/fever, hf_config: v1.0, category: J, subdir: fever, license: CC-BY-SA-3.0, risk: 0.1, priority: 2, tokens: "~30M"}
+  - {key: miracl, kind: hf, hf_id: miracl/miracl, hf_config: en, category: J, subdir: miracl, license: Apache-2.0, risk: 0.0, priority: 2, tokens: "~500M"}
+
+  # N. Evaluation
+  - {key: mmlu, kind: hf, hf_id: cais/mmlu, hf_config: all, category: N, subdir: mmlu, license: MIT, risk: 0.0, priority: 1, tokens: "~5M (eval)"}
+  - {key: hellaswag, kind: hf, hf_id: Rowan/hellaswag, category: N, subdir: hellaswag, license: MIT, risk: 0.0, priority: 1, tokens: "~10M (eval)"}
+  - {key: truthful_qa, kind: hf, hf_id: truthfulqa/truthful_qa, category: N, subdir: truthful_qa, license: Apache-2.0, risk: 0.0, priority: 1, tokens: "~1M (eval)"}
+  - {key: openbookqa, kind: hf, hf_id: allenai/openbookqa, hf_config: main, category: N, subdir: openbookqa, license: Apache-2.0, risk: 0.0, priority: 2, tokens: "~1M (eval)"}
+
+  # H. Synthetic
+  - {key: cosmopedia_v2, kind: hf, hf_id: HuggingFaceTB/smollm-corpus, hf_config: cosmopedia-v2, category: H, subdir: cosmopedia_v2, license: Apache-2.0, risk: 0.0, priority: 1, tokens: "~28B"}
+
+  # A. Books
+  - {key: pg19, kind: hf, hf_id: emozilla/pg19, category: A, subdir: pg19, license: Apache-2.0+PD, risk: 0.0, priority: 1, tokens: "~2.5B"}
+  - {key: gutenberg_catalog, kind: http, url: "https://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2", category: A, subdir: gutenberg, license: Public Domain, risk: 0.0, priority: 1, tokens: "catalog+25 texts"}
+
+  # B. Educational
+  - {key: openstax_subjects, kind: http, url: "https://openstax.org/subjects", category: B, subdir: openstax, license: CC-BY-4.0, risk: 0.0, priority: 1, tokens: "~50M"}
+  - {key: wikibooks_index, kind: http, url: "https://en.wikibooks.org/wiki/Special:AllPages", category: B, subdir: wikibooks, license: CC-BY-SA-4.0, risk: 0.1, priority: 1, tokens: "~300M"}
+
+  # F. Articles
+  - {key: wikipedia_dump, kind: http, url: "https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2", category: F, subdir: wikipedia, license: CC-BY-SA-4.0, risk: 0.1, priority: 1, tokens: "~4B", notes: "~22GB compressed"}
+
+  # G. Research
+  - {key: arxiv_api, kind: http, url: "https://export.arxiv.org/api/query", category: G, subdir: arxiv, license: Mixed, risk: 0.2, priority: 1, tokens: "metadata seed"}
+  - {key: pmc_oa_index, kind: http, url: "https://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_file_list.csv", category: G, subdir: pmc_oa, license: Mixed CC, risk: 0.1, priority: 2, tokens: "index only"}
+
+  # K. Knowledge Graph
+  - {key: wikidata_truthy, kind: http, url: "https://dumps.wikimedia.org/wikidatawiki/entities/latest-truthy.nt.gz", category: K, subdir: wikidata, license: CC0, risk: 0.0, priority: 1, tokens: "~10B verbalized", notes: "~50GB compressed"}
+  - {key: conceptnet, kind: http, url: "https://s3.amazonaws.com/conceptnet/downloads/2019/edges/conceptnet-assertions-5.7.0.csv.gz", category: K, subdir: conceptnet, license: CC-BY-SA-4.0, risk: 0.1, priority: 2, tokens: "~1B verbalized"}
+
+  # L. Language Resources
+  - {key: wordnet, kind: http, url: "https://wordnetcode.princeton.edu/wn3.1.dict.tar.gz", category: L, subdir: wordnet, license: Princeton BSD-like, risk: 0.0, priority: 1, tokens: "~50M"}
+  - {key: framenet_info, kind: http, url: "https://framenet.icsi.berkeley.edu/fndrupal/framenet_data", category: L, subdir: framenet, license: CC-BY-3.0, risk: 0.0, priority: 2, tokens: "~30M"}
+
+  # M. Legal / Government
+  - {key: courtlistener_info, kind: http, url: "https://www.courtlistener.com/help/api/bulk-data/", category: M, subdir: courtlistener, license: Public Domain, risk: 0.0, priority: 2, tokens: "~20B"}
+  - {key: ietf_rfc_index, kind: http, url: "https://www.rfc-editor.org/rfc-index.txt", category: M, subdir: ietf_rfcs, license: BSD-like, risk: 0.0, priority: 2, tokens: "~200M"}
+  - {key: sec_edgar_info, kind: http, url: "https://www.sec.gov/cgi-bin/browse-edgar", category: M, subdir: sec_edgar, license: Public Domain, risk: 0.0, priority: 3, tokens: "~15B"}
+
+  # Warehouse-only
+  - {key: sciq, kind: hf_warehouse_only, hf_id: allenai/sciq, category: C, subdir: sciq, license: CC-BY-NC-3.0, risk: 0.4, priority: 3, warehouse_only: true}
+  - {key: ms_marco, kind: hf_warehouse_only, hf_id: microsoft/ms_marco, hf_config: v2.1, category: J, subdir: ms_marco, license: Microsoft Research, risk: 0.6, priority: 3, warehouse_only: true}

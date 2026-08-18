@@ -1,0 +1,138 @@
+# =====================================================================
+# CognitiveOC Extended Dataset Registry (YAML mirror for audit/governance)
+# =====================================================================
+# This is the human-readable mirror of the EXTENDED registry embedded
+# in 02b_corpus_acquisition_manager_extended.py. The Python script
+# is the source of truth; this YAML is for audit/review.
+#
+# All entries below are *gap-filling* additions to the original registry
+# in 05_dataset_registry.yaml. They target empty / underrepresented
+# categories: E, F, I, K, M as well as expansion of A, B, C, D, G, L.
+#
+# Risk: 0.0=zero, 0.1=very low, 0.2=low, 0.3+=moderate/high (warehouse-only)
+# Priority: 1=must-have, 2=recommended, 3=optional
+# =====================================================================
+
+registry_version: 2.1-extended
+last_audited: "2026-06-26"
+audit_policy: zero_license_risk
+parent_registry: "05_dataset_registry.yaml"
+
+# Approximate category targets (raw warehouse tokens)
+category_targets:
+  A_books:              "25B"
+  B_educational:        "10B"
+  C_reasoning:          "15B"
+  D_conversations:      "15B"
+  E_technical_docs:     "20B"
+  F_articles:           "30B"
+  G_research_papers:    "10B"
+  H_synthetic:          "10B (after first model)"
+  I_cognition:          "5B"
+  J_retrieval:          "5B"
+  K_knowledge_graph:    "5-10B"
+  L_language_resources: "3B"
+  M_legal_government:   "5-10B"
+  N_evaluation:         "not counted for training"
+
+sources:
+  # === A. BOOKS (expand toward 25 B) ===
+  - {key: standard_ebooks, kind: http, url: "https://standardebooks.org/feeds/opds/all", category: A, subdir: standard_ebooks, license: "Public Domain / CC0", risk: 0.0, priority: 1, tokens: "~500M"}
+  - {key: gutenberg_au_index, kind: http, url: "https://gutenberg.net.au/titles-a-m.html", category: A, subdir: gutenberg_au, license: "Public Domain (AU)", risk: 0.1, priority: 2, tokens: "~500M"}
+  - {key: gutenberg_ca_index, kind: http, url: "http://gutenberg.ca/index.html", category: A, subdir: gutenberg_ca, license: "Public Domain (CA)", risk: 0.1, priority: 2, tokens: "~300M"}
+  - {key: wikisource_en_dump, kind: http, url: "https://dumps.wikimedia.org/enwikisource/latest/enwikisource-latest-pages-articles.xml.bz2", category: A, subdir: wikisource, license: "CC-BY-SA-4.0+GFDL", risk: 0.1, priority: 1, tokens: "~1B"}
+  - {key: libritts_text, kind: http, url: "https://www.openslr.org/resources/60/train-clean-100.tar.gz", category: A, subdir: libritts_text, license: "Public Domain", risk: 0.0, priority: 2, tokens: "~50M"}
+
+  # === B. EDUCATIONAL (expand toward 10 B) ===
+  - {key: wikiversity_en_dump, kind: http, url: "https://dumps.wikimedia.org/enwikiversity/latest/enwikiversity-latest-pages-articles.xml.bz2", category: B, subdir: wikiversity, license: "CC-BY-SA-4.0", risk: 0.0, priority: 1, tokens: "~80M"}
+  - {key: wikibooks_en_dump, kind: http, url: "https://dumps.wikimedia.org/enwikibooks/latest/enwikibooks-latest-pages-articles.xml.bz2", category: B, subdir: wikibooks_dump, license: "CC-BY-SA-4.0", risk: 0.0, priority: 1, tokens: "~300M"}
+  - {key: openstax_search_extra, kind: http, url: "https://openstax.org/books/college-physics-2e", category: B, subdir: openstax_extra, license: "CC-BY-4.0", risk: 0.0, priority: 1, tokens: "~30M"}
+  - {key: ck12_search, kind: http, url: "https://www.ck12.org/cbrowse/", category: B, subdir: ck12, license: "CC-BY-NC-3.0", risk: 0.3, priority: 3, warehouse_only: true, tokens: "~200M"}
+  - {key: saylor_courses, kind: http, url: "https://learn.saylor.org/course/index.php", category: B, subdir: saylor, license: "CC-BY-3.0 (mixed)", risk: 0.1, priority: 2, tokens: "~100M"}
+  - {key: oer_commons_search, kind: http, url: "https://www.oercommons.org/oer", category: B, subdir: oer_commons, license: "Mixed CC", risk: 0.2, priority: 2, tokens: "~1B"}
+
+  # === C. REASONING (additions) ===
+  - {key: math_qa_aqua, kind: hf, hf_id: "deepmind/aqua_rat", hf_config: raw, category: C, subdir: aqua_rat, license: "Apache-2.0", risk: 0.0, priority: 2, tokens: "~30M"}
+  - {key: math_qa_general, kind: hf, hf_id: "allenai/math_qa", category: C, subdir: math_qa, license: "Apache-2.0", risk: 0.0, priority: 2, tokens: "~20M"}
+  - {key: tabmwp, kind: hf, hf_id: "UCLA-AGI/TabMWP", category: C, subdir: tabmwp, license: "CC-BY-4.0", risk: 0.0, priority: 2, tokens: "~10M"}
+  - {key: logiqa, kind: hf, hf_id: "lucasmccabe/logiqa", category: C, subdir: logiqa, license: "CC-BY-SA-4.0", risk: 0.1, priority: 2, tokens: "~3M"}
+  - {key: open_orca_subset, kind: hf, hf_id: "Open-Orca/OpenOrca", category: C, subdir: open_orca, license: "MIT", risk: 0.1, priority: 2, tokens: "~1B"}
+
+  # === D. CONVERSATIONS / INSTRUCTION (expand toward 15 B) ===
+  - {key: tulu3_sft, kind: hf, hf_id: "allenai/tulu-3-sft-mixture", category: D, subdir: tulu3_sft, license: "ODC-By-1.0", risk: 0.1, priority: 1, tokens: "~1.5B"}
+  - {key: aya_collection, kind: hf, hf_id: "CohereForAI/aya_collection_language_split", hf_config: english, category: D, subdir: aya_collection, license: "Apache-2.0", risk: 0.0, priority: 2, tokens: "~3B"}
+  - {key: no_robots, kind: hf, hf_id: "HuggingFaceH4/no_robots", category: D, subdir: no_robots, license: "CC-BY-NC-4.0", risk: 0.3, priority: 3, warehouse_only: true, tokens: "~30M"}
+  - {key: flan_v2_subset, kind: hf, hf_id: "Open-Orca/FLAN", category: D, subdir: flan_v2, license: "Apache-2.0", risk: 0.0, priority: 1, tokens: "~5B"}
+  - {key: wildchat_1m, kind: hf, hf_id: "allenai/WildChat-1M", category: D, subdir: wildchat, license: "ODC-By-1.0", risk: 0.2, priority: 2, tokens: "~1B"}
+  - {key: infinity_instruct, kind: hf, hf_id: "BAAI/Infinity-Instruct", hf_config: "7M", category: D, subdir: infinity_instruct, license: "CC-BY-SA-4.0", risk: 0.1, priority: 2, tokens: "~2B"}
+
+  # === E. TECHNICAL DOCS (CRITICAL — was empty, target 20 B) ===
+  - {key: python_docs, kind: http, url: "https://docs.python.org/3/archives/python-3.12.7-docs-html.zip", category: E, subdir: python_docs, license: "PSF License", risk: 0.0, priority: 1, tokens: "~30M"}
+  - {key: numpy_docs, kind: http, url: "https://numpy.org/doc/stable/numpy-html.zip", category: E, subdir: numpy_docs, license: "BSD-3-Clause", risk: 0.0, priority: 1, tokens: "~20M"}
+  - {key: pandas_docs, kind: http, url: "https://pandas.pydata.org/docs/", category: E, subdir: pandas_docs, license: "BSD-3-Clause", risk: 0.0, priority: 1, tokens: "~25M"}
+  - {key: pytorch_docs, kind: http, url: "https://pytorch.org/docs/stable/index.html", category: E, subdir: pytorch_docs, license: "BSD-3-Clause", risk: 0.0, priority: 1, tokens: "~30M"}
+  - {key: tensorflow_docs, kind: http, url: "https://www.tensorflow.org/api_docs", category: E, subdir: tensorflow_docs, license: "Apache-2.0", risk: 0.0, priority: 1, tokens: "~30M"}
+  - {key: fastapi_docs, kind: http, url: "https://fastapi.tiangolo.com/", category: E, subdir: fastapi_docs, license: "MIT", risk: 0.0, priority: 1, tokens: "~10M"}
+  - {key: sqlite_docs, kind: http, url: "https://www.sqlite.org/docs.html", category: E, subdir: sqlite_docs, license: "Public Domain", risk: 0.0, priority: 2, tokens: "~10M"}
+  - {key: linux_kernel_docs, kind: http, url: "https://www.kernel.org/doc/html/latest/", category: E, subdir: linux_docs, license: "GPL-2.0 (docs)", risk: 0.1, priority: 1, tokens: "~50M"}
+  - {key: llvm_docs, kind: http, url: "https://llvm.org/docs/", category: E, subdir: llvm_docs, license: "Apache-2.0", risk: 0.0, priority: 2, tokens: "~15M"}
+  - {key: git_docs, kind: http, url: "https://git-scm.com/docs", category: E, subdir: git_docs, license: "GPL-2.0 (docs)", risk: 0.1, priority: 2, tokens: "~10M"}
+  - {key: rust_book, kind: http, url: "https://doc.rust-lang.org/book/", category: E, subdir: rust_book, license: "MIT OR Apache-2.0", risk: 0.0, priority: 1, tokens: "~5M"}
+  - {key: go_docs, kind: http, url: "https://go.dev/doc/", category: E, subdir: go_docs, license: "BSD-3-Clause", risk: 0.0, priority: 2, tokens: "~10M"}
+  - {key: gnu_manuals_index, kind: http, url: "https://www.gnu.org/manual/manual.html", category: E, subdir: gnu_manuals, license: "GFDL", risk: 0.1, priority: 1, tokens: "~30M"}
+  - {key: the_stack_v2_smol, kind: hf, hf_id: "bigcode/the-stack-v2-train-smol-ids", category: E, subdir: the_stack_v2_smol, license: "Permissive (per-file)", risk: 0.1, priority: 2, tokens: "~3B"}
+  - {key: ietf_rfcs_bulk, kind: http, url: "https://www.rfc-editor.org/in-notes/tar/rfc-all.tar.gz", category: E, subdir: ietf_rfcs_bulk, license: "BSD-like", risk: 0.0, priority: 2, tokens: "~200M"}
+
+  # === F. ARTICLES (CRITICAL — was empty, target 30 B) ===
+  - {key: wikipedia_simple, kind: hf, hf_id: "wikimedia/wikipedia", hf_config: "20231101.simple", category: F, subdir: wikipedia_simple, license: "CC-BY-SA-4.0", risk: 0.0, priority: 1, tokens: "~50M"}
+  - {key: wikipedia_en_full, kind: hf, hf_id: "wikimedia/wikipedia", hf_config: "20231101.en", category: F, subdir: wikipedia_en, license: "CC-BY-SA-4.0", risk: 0.0, priority: 1, tokens: "~4B", notes: "~20GB"}
+  - {key: wikinews_en_dump, kind: http, url: "https://dumps.wikimedia.org/enwikinews/latest/enwikinews-latest-pages-articles.xml.bz2", category: F, subdir: wikinews, license: "CC-BY-2.5", risk: 0.0, priority: 2, tokens: "~30M"}
+  - {key: wikiquote_en_dump, kind: http, url: "https://dumps.wikimedia.org/enwikiquote/latest/enwikiquote-latest-pages-articles.xml.bz2", category: F, subdir: wikiquote, license: "CC-BY-SA-4.0", risk: 0.0, priority: 3, tokens: "~30M"}
+  - {key: fineweb_edu_sample, kind: hf, hf_id: "HuggingFaceFW/fineweb-edu", hf_config: "sample-10BT", category: F, subdir: fineweb_edu, license: "ODC-By-1.0", risk: 0.2, priority: 1, tokens: "~10B"}
+  - {key: stackexchange_archive, kind: http, url: "https://archive.org/download/stackexchange/math.stackexchange.com.7z", category: F, subdir: stackexchange, license: "CC-BY-SA-4.0", risk: 0.0, priority: 1, tokens: "~3B"}
+  - {key: cc_news, kind: hf, hf_id: "vblagoje/cc_news", category: F, subdir: cc_news, license: "Apache-2.0", risk: 0.0, priority: 2, tokens: "~3B"}
+
+  # === G. RESEARCH PAPERS (expand toward 10 B) ===
+  - {key: openalex_works_sample, kind: http, url: "https://docs.openalex.org/download-all-data/openalex-snapshots", category: G, subdir: openalex, license: "CC0", risk: 0.0, priority: 1, tokens: "~30B"}
+  - {key: redpajama_arxiv, kind: hf, hf_id: "togethercomputer/RedPajama-Data-1T", hf_config: arxiv, category: G, subdir: redpajama_arxiv, license: "ODC-By-1.0", risk: 0.2, priority: 2, tokens: "~28B"}
+  - {key: pubmed_qa_artificial, kind: hf, hf_id: "qiaojin/PubMedQA", hf_config: pqa_artificial, category: G, subdir: pubmed_qa_artificial, license: "MIT", risk: 0.0, priority: 2, tokens: "~100M"}
+  - {key: pubmed_qa_labeled, kind: hf, hf_id: "qiaojin/PubMedQA", hf_config: pqa_labeled, category: G, subdir: pubmed_qa_labeled, license: "MIT", risk: 0.0, priority: 1, tokens: "~5M"}
+  - {key: s2orc_odc, kind: hf, hf_id: "allenai/peS2o", category: G, subdir: s2orc, license: "ODC-By-1.0", risk: 0.2, priority: 2, tokens: "~67B"}
+  - {key: pmc_oa_bulk, kind: http, url: "https://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_bulk/oa_comm/txt/", category: G, subdir: pmc_oa_bulk, license: "Mixed CC", risk: 0.2, priority: 2, tokens: "~25B"}
+  - {key: elife_archive_info, kind: http, url: "https://elifesciences.org/archive/", category: G, subdir: elife, license: "CC-BY-4.0", risk: 0.0, priority: 2, tokens: "~1B"}
+  - {key: crossref_works_sample, kind: http, url: "https://api.crossref.org/works", category: G, subdir: crossref, license: "CC0 (metadata)", risk: 0.0, priority: 2, tokens: "~5B"}
+
+  # === I. COGNITION (CRITICAL — was empty, target 5 B) ===
+  - {key: cognitive_atlas, kind: http, url: "https://www.cognitiveatlas.org/api/v-alpha/concept", category: I, subdir: cognitive_atlas, license: "CC-BY-3.0", risk: 0.0, priority: 1, tokens: "~5M"}
+  - {key: openneuro_metadata, kind: http, url: "https://openneuro.org/api/datasets", category: I, subdir: openneuro, license: "CC0", risk: 0.0, priority: 2, tokens: "~10M"}
+  - {key: psyarxiv_oai, kind: http, url: "https://psyarxiv.com/oai", category: I, subdir: psyarxiv, license: "Mixed CC", risk: 0.2, priority: 2, tokens: "~2B"}
+  - {key: ncbi_bookshelf_cognition, kind: http, url: "https://www.ncbi.nlm.nih.gov/books/NBK10844/", category: I, subdir: ncbi_bookshelf, license: "Mixed CC", risk: 0.2, priority: 1, tokens: "~1B"}
+  - {key: openstax_psych_extra, kind: http, url: "https://openstax.org/books/psychology-2e/pages/1-introduction", category: I, subdir: openstax_psych, license: "CC-BY-4.0", risk: 0.0, priority: 1, tokens: "~50M"}
+  - {key: neuroscience_open_book, kind: http, url: "https://www.ncbi.nlm.nih.gov/books/NBK10799/", category: I, subdir: neuroscience_open, license: "CC-BY-NC-SA", risk: 0.3, priority: 3, warehouse_only: true, tokens: "~50M"}
+
+  # === K. KNOWLEDGE GRAPH (CRITICAL — was empty, target 5-10 B) ===
+  - {key: wikidata_lexemes, kind: http, url: "https://dumps.wikimedia.org/wikidatawiki/entities/latest-lexemes.json.bz2", category: K, subdir: wikidata_lexemes, license: "CC0", risk: 0.0, priority: 1, tokens: "~500M"}
+  - {key: wikidata_truthy_full, kind: http, url: "https://dumps.wikimedia.org/wikidatawiki/entities/latest-truthy.nt.gz", category: K, subdir: wikidata_truthy, license: "CC0", risk: 0.0, priority: 2, tokens: "~10B", notes: "~80GB"}
+  - {key: dbpedia_short_abstracts, kind: http, url: "https://databus.dbpedia.org/dbpedia/text/short-abstracts/2022.12.01/short-abstracts_lang=en.ttl.bzip2", category: K, subdir: dbpedia, license: "CC-BY-SA-3.0", risk: 0.1, priority: 1, tokens: "~3B"}
+  - {key: yago_4_5, kind: http, url: "https://yago-knowledge.org/data/yago4.5/yago-4.5.0.1.tar.gz", category: K, subdir: yago, license: "CC-BY-SA-3.0", risk: 0.1, priority: 2, tokens: "~3B"}
+  - {key: conceptnet_assertions, kind: http, url: "https://s3.amazonaws.com/conceptnet/downloads/2019/edges/conceptnet-assertions-5.7.0.csv.gz", category: K, subdir: conceptnet_assertions, license: "CC-BY-SA-4.0", risk: 0.1, priority: 1, tokens: "~1B"}
+
+  # === L. LANGUAGE RESOURCES (expand toward 3 B) ===
+  - {key: ud_treebanks, kind: http, url: "https://lindat.mff.cuni.cz/repository/xmlui/bitstream/handle/11234/1-5287/ud-treebanks-v2.13.tgz", category: L, subdir: universal_dependencies, license: "CC-BY-SA-4.0", risk: 0.1, priority: 2, tokens: "~500M"}
+  - {key: framenet_archive, kind: http, url: "https://framenet.icsi.berkeley.edu/fndrupal/framenet_request_data", category: L, subdir: framenet_data, license: "CC-BY-3.0", risk: 0.0, priority: 1, tokens: "~30M"}
+  - {key: verbnet_data, kind: http, url: "https://verbs.colorado.edu/verbnet_downloads/downloads/verbnet3.4.tar.gz", category: L, subdir: verbnet, license: "Apache-2.0", risk: 0.0, priority: 2, tokens: "~10M"}
+  - {key: wiktionary_en_dump, kind: http, url: "https://dumps.wikimedia.org/enwiktionary/latest/enwiktionary-latest-pages-articles.xml.bz2", category: L, subdir: wiktionary, license: "CC-BY-SA-4.0", risk: 0.0, priority: 1, tokens: "~500M"}
+  - {key: opus_books, kind: hf, hf_id: "Helsinki-NLP/opus_books", hf_config: "en-fr", category: L, subdir: opus_books, license: "Public Domain / CC", risk: 0.1, priority: 3, tokens: "~50M"}
+
+  # === M. LEGAL / GOVERNMENT (CRITICAL — was empty, target 5-10 B) ===
+  - {key: us_code_xml, kind: http, url: "https://uscode.house.gov/download/releasepoints/us/pl/118/47/xml_uscAll@118-47.zip", category: M, subdir: us_code, license: "Public Domain (US Gov)", risk: 0.0, priority: 1, tokens: "~500M"}
+  - {key: courtlistener_search_seed, kind: http, url: "https://www.courtlistener.com/api/rest/v3/search/?q=*&type=o", category: M, subdir: courtlistener, license: "Public Domain", risk: 0.0, priority: 1, tokens: "~20B"}
+  - {key: sec_edgar_full_index, kind: http, url: "https://www.sec.gov/Archives/edgar/full-index/2024/QTR1/form.idx", category: M, subdir: sec_edgar, license: "Public Domain", risk: 0.0, priority: 1, tokens: "~15B"}
+  - {key: nist_publications, kind: http, url: "https://www.nist.gov/publications", category: M, subdir: nist, license: "Public Domain (US Gov)", risk: 0.0, priority: 2, tokens: "~500M"}
+  - {key: cdc_data, kind: http, url: "https://www.cdc.gov/library/researchguides/index.html", category: M, subdir: cdc, license: "Public Domain (US Gov)", risk: 0.0, priority: 2, tokens: "~500M"}
+  - {key: nih_open, kind: http, url: "https://www.nih.gov/health-information", category: M, subdir: nih, license: "Public Domain (US Gov)", risk: 0.0, priority: 2, tokens: "~500M"}
+  - {key: who_publications, kind: http, url: "https://www.who.int/publications", category: M, subdir: who, license: "CC-BY-NC-SA", risk: 0.3, priority: 3, warehouse_only: true, tokens: "~1B"}
+  - {key: eur_lex_search, kind: http, url: "https://eur-lex.europa.eu/homepage.html", category: M, subdir: eur_lex, license: "EUR-Lex re-use", risk: 0.1, priority: 2, tokens: "~3B"}
+  - {key: data_gov_index, kind: http, url: "https://catalog.data.gov/api/3/action/package_search", category: M, subdir: data_gov, license: "Public Domain / Mixed Open", risk: 0.1, priority: 2, tokens: "~5B"}
+  - {key: nasa_open, kind: http, url: "https://data.nasa.gov/data.json", category: M, subdir: nasa, license: "Public Domain (NASA)", risk: 0.0, priority: 2, tokens: "~200M"}
+  - {key: un_digital_library, kind: http, url: "https://digitallibrary.un.org/", category: M, subdir: un_library, license: "UN (mixed open)", risk: 0.2, priority: 3, tokens: "~1B"}

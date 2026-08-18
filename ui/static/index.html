@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CognitiveOC v3</title>
+<style>
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;
+  --border:#2a2d3e;--accent:#6c8dfa;--accent2:#a78bfa;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --green:#22c55e;--yellow:#f59e0b;--red:#ef4444;
+  --orange:#f97316;--blue:#3b82f6;
+  --radius:8px;--font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;height:100vh;display:flex;flex-direction:column}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo{font-size:16px;font-weight:700;color:var(--accent)}
+.logo span{color:var(--accent2)}
+.header-status{margin-left:auto;display:flex;gap:10px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--text3)}
+.dot.online{background:var(--green)}
+.dot.warn{background:var(--yellow)}
+.status-text{font-size:12px;color:var(--text2)}
+
+/* Tab bar */
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.tab{padding:8px 16px;cursor:pointer;font-size:13px;color:var(--text2);white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* Main layout */
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);padding:12px;overflow-y:auto;flex-shrink:0}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.panel{display:none;flex:1;overflow:hidden}
+.panel.active{display:flex;flex-direction:column}
+
+/* Sidebar */
+.sidebar-section{margin-bottom:16px}
+.sidebar-title{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.sidebar-item{padding:6px 10px;border-radius:var(--radius);cursor:pointer;font-size:13px;color:var(--text2);display:flex;justify-content:space-between;align-items:center}
+.sidebar-item:hover{background:var(--surface2);color:var(--text)}
+.sidebar-item .badge{font-size:11px;background:var(--accent);color:#fff;padding:1px 6px;border-radius:10px}
+.badge.warn{background:var(--yellow);color:#000}
+.badge.ok{background:var(--green)}
+.badge.err{background:var(--red)}
+
+/* Chat panel */
+.chat-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:80%;padding:10px 14px;border-radius:var(--radius);font-size:14px;line-height:1.5}
+.msg.user{background:var(--accent);color:#fff;align-self:flex-end}
+.msg.assistant{background:var(--surface2);color:var(--text);align-self:flex-start;border:1px solid var(--border)}
+.msg.system{background:transparent;color:var(--text3);align-self:center;font-size:12px;font-style:italic}
+.msg .meta{font-size:11px;color:var(--text3);margin-top:4px}
+.chat-input-area{padding:12px 16px;border-top:1px solid var(--border);background:var(--surface)}
+.chat-row{display:flex;gap:8px;align-items:flex-end}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:42px;max-height:120px;outline:none}
+.chat-input:focus{border-color:var(--accent)}
+.btn{padding:8px 16px;border-radius:var(--radius);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+
+/* Generic panel content */
+.panel-content{flex:1;overflow-y:auto;padding:16px}
+.panel-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.panel-title{font-size:15px;font-weight:600;color:var(--text);flex:1}
+
+/* Cards / sections */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;font-size:11px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* Metric chips */
+.metric{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px}
+.metric-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.metric-value{font-size:20px;font-weight:700;color:var(--accent)}
+.metric-sub{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* Toggle switch */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:13px;color:var(--text)}
+.toggle-sub{font-size:11px;color:var(--text3)}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--surface2);border-radius:22px;cursor:pointer;transition:.2s;border:1px solid var(--border)}
+.slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:var(--text3);border-radius:50%;transition:.2s}
+input:checked + .slider{background:var(--accent);border-color:var(--accent)}
+input:checked + .slider::before{transform:translateX(18px);background:#fff}
+
+/* Profile buttons */
+.profile-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.profile-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:12px;transition:all .15s}
+.profile-btn:hover{border-color:var(--accent);color:var(--accent)}
+.profile-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Memory / KG items */
+.item-row{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px}
+.item-row .item-text{font-size:13px;color:var(--text);margin-bottom:3px}
+.item-row .item-meta{font-size:11px;color:var(--text3)}
+
+/* Trace / log */
+.trace-box{background:#0a0c14;border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-family:'Consolas','Courier New',monospace;font-size:12px;color:#9ca3af;overflow-y:auto;max-height:220px;white-space:pre-wrap;word-break:break-all}
+
+/* Search input */
+.search-input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:7px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;width:100%}
+.search-input:focus{border-color:var(--accent)}
+
+/* Workflow badge colors */
+.state-created{color:var(--text3)}
+.state-running,.state-executing,.state-gathering,.state-verifying{color:var(--yellow)}
+.state-completed{color:var(--green)}
+.state-failed{color:var(--red)}
+.state-paused{color:var(--orange)}
+
+/* Rating stars */
+.rating{display:flex;gap:4px}
+.star{cursor:pointer;font-size:20px;color:var(--text3)}
+.star.active{color:var(--yellow)}
+
+/* Hard-line sep */
+hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Cognitive<span>OC</span> <small style="font-size:11px;color:var(--text3)">v3</small></div>
+  <div class="header-status">
+    <div class="dot" id="status-dot"></div>
+    <span class="status-text" id="status-text">connecting…</span>
+    <span class="status-text" id="backend-text" style="color:var(--accent)"></span>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('chat')">💬 Chat</div>
+  <div class="tab" onclick="switchTab('memory')">🧠 Memory</div>
+  <div class="tab" onclick="switchTab('retrieval')">🔍 Retrieval</div>
+  <div class="tab" onclick="switchTab('kg')">🕸 Knowledge</div>
+  <div class="tab" onclick="switchTab('workflow')">⚙ Workflows</div>
+  <div class="tab" onclick="switchTab('research')">🔬 Research</div>
+  <div class="tab" onclick="switchTab('validation')">✅ Validation</div>
+  <div class="tab" onclick="switchTab('dataset')">📦 Datasets</div>
+  <div class="tab" onclick="switchTab('guardrails')">🛡 Guardrails</div>
+  <div class="tab" onclick="switchTab('cognition')">🧩 Cognition</div>
+  <div class="tab" onclick="switchTab('metrics')">📊 Metrics</div>
+  <div class="tab" onclick="switchTab('eval')">🎯 Evaluation</div>
+  <div class="tab" onclick="switchTab('training')">🏋 Training</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">System</div>
+      <div class="sidebar-item" onclick="showStatus()">
+        Status <span class="badge ok" id="sb-status">OK</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('metrics')">
+        Metrics
+      </div>
+      <div class="sidebar-item" onclick="switchTab('eval')">
+        Evaluation
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Controls</div>
+      <div class="sidebar-item" onclick="switchTab('guardrails')">
+        Guardrails <span class="badge" id="sb-guards">standard</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('cognition')">
+        Cognition <span class="badge" id="sb-cognition">full</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Data</div>
+      <div class="sidebar-item" onclick="switchTab('memory')">
+        Memory <span class="badge" id="sb-memory">—</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('kg')">
+        Knowledge Graph <span class="badge" id="sb-kg">—</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('retrieval')">
+        Retrieval
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Session</div>
+      <div class="sidebar-item" onclick="clearSession()">Clear Session</div>
+      <div class="sidebar-item" onclick="showAuthKey()">Auth Key</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ═══ CHAT ═══════════════════════════════════════════════════ -->
+    <div class="panel active" id="panel-chat">
+      <div class="chat-area" id="chat-messages">
+        <div class="msg system">CognitiveOC v3 — local cognitive orchestration. Type a message to begin.</div>
+      </div>
+      <div id="chat-trace" class="trace-box" style="max-height:80px;margin:0 16px 4px;display:none"></div>
+      <div class="chat-input-area">
+        <div class="chat-row">
+          <textarea class="chat-input" id="chat-in" placeholder="Message CognitiveOC…" rows="1"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+          <button class="btn btn-primary" onclick="sendChat()">Send</button>
+          <label class="btn btn-secondary btn-sm" title="Upload document">
+            📎 <input type="file" style="display:none" onchange="uploadFile(this)">
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+          <label style="font-size:12px;color:var(--text3)">
+            <input type="checkbox" id="show-trace"> Show trace
+          </label>
+          <span id="chat-status" style="font-size:12px;color:var(--text3);margin-left:8px"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MEMORY ══════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-memory">
+      <div class="panel-header">
+        <span class="panel-title">Memory Browser</span>
+        <input class="search-input" id="mem-search" placeholder="Search memories…" style="width:220px"
+          oninput="searchMemory(this.value)">
+        <select id="mem-kind" class="search-input" style="width:130px" onchange="loadMemories()">
+          <option value="">All kinds</option>
+          <option value="episodic">Episodic</option>
+          <option value="semantic">Semantic</option>
+          <option value="preference">Preference</option>
+          <option value="project">Project</option>
+          <option value="task">Task</option>
+          <option value="goal">Goal</option>
+          <option value="learning">Learning</option>
+          <option value="workspace">Workspace</option>
+          <option value="fact">Fact</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" onclick="loadMemories()">Refresh</button>
+        <button class="btn btn-secondary btn-sm" onclick="consolidateMemory()">Consolidate</button>
+        <button class="btn btn-secondary btn-sm" onclick="decayMemory()">Decay</button>
+      </div>
+      <div class="panel-content" id="mem-list">Loading…</div>
+    </div>
+
+    <!-- ═══ RETRIEVAL ════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-retrieval">
+      <div class="panel-header">
+        <span class="panel-title">Retrieval Inspector</span>
+        <button class="btn btn-secondary btn-sm" onclick="loadRetrievalStats()">Refresh</button>
+      </div>
+      <div class="panel-content">
+        <div id="ret-stats"></div>
+        <hr>
+        <div class="card-title" style="margin-bottom:8px">Self-Improvement</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-secondary btn-sm" onclick="retAction('hard_examples')">Hard Examples</button>
+          <button class="btn btn-secondary btn-sm" onclick="retAction('export_rewrites')">Export Query Rewrites</button>
+          <button class="btn btn-secondary btn-sm" onclick="retAction('export_reranker')">Export Reranker Data</button>
+        </div>
+        <div id="ret-result" class="trace-box" style="margin-top:10px;max-height:300px"></div>
+      </div>
+    </div>
+
+    <!-- ═══ KG ═══════════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-kg">
+      <div class="panel-header">
+        <span class="panel-title">Knowledge Graph</span>
+        <input class="search-input" id="kg-search" placeholder="Search entities/triples…" style="width:220px">
+        <button class="btn btn-primary btn-sm" onclick="kgSearch()">Search</button>
+        <button class="btn btn-secondary btn-sm" onclick="kgAction('analytics')">Analytics</button>
+        <button class="btn btn-secondary btn-sm" onclick="kgAction('contradictions')">Contradictions</button>
+        <button class="btn btn-secondary btn-sm" onclick="kgAction('cluster')">Clusters</button>
+        <button class="btn btn-secondary btn-sm" onclick="kgAction('export')">Export JSON</button>
+      </div>
+      <div class="panel-content" id="kg-content">Loading…</div>
+    </div>
+
+    <!-- ═══ WORKFLOW ═════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-workflow">
+      <div class="panel-header">
+        <span class="panel-title">Workflow Dashboard</span>
+        <input class="search-input" id="wf-goal" placeholder="Workflow goal…" style="width:280px">
+        <button class="btn btn-primary btn-sm" onclick="createWorkflow()">Create</button>
+        <button class="btn btn-secondary btn-sm" onclick="loadWorkflows()">Refresh</button>
+      </div>
+      <div class="panel-content" id="wf-list">Loading…</div>
+    </div>
+
+    <!-- ═══ RESEARCH ══════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-research">
+      <div class="panel-header">
+        <span class="panel-title">Research Engine</span>
+        <input class="search-input" id="re-question" placeholder="Research question…" style="width:320px">
+        <button class="btn btn-primary btn-sm" onclick="startResearch()">Start</button>
+        <button class="btn btn-secondary btn-sm" onclick="loadResearch()">Refresh</button>
+      </div>
+      <div class="panel-content" id="re-list">Loading…</div>
+    </div>
+
+    <!-- ═══ VALIDATION ═══════════════════════════════════════════════ -->
+    <div class="panel" id="panel-validation">
+      <div class="panel-header">
+        <span class="panel-title">Validation</span>
+        <button class="btn btn-secondary btn-sm" onclick="loadLastValidation()">Last Result</button>
+      </div>
+      <div class="panel-content" id="val-content">
+        <div class="card">
+          <div class="card-title">Manual Validate</div>
+          <textarea class="search-input" id="val-response" placeholder="Response to validate…" rows="4"
+            style="margin-bottom:8px"></textarea>
+          <textarea class="search-input" id="val-query" placeholder="Original query…" rows="2"
+            style="margin-bottom:8px"></textarea>
+          <button class="btn btn-primary btn-sm" onclick="runValidation()">Validate</button>
+        </div>
+        <div id="val-result"></div>
+      </div>
+    </div>
+
+    <!-- ═══ DATASET ═══════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-dataset">
+      <div class="panel-header">
+        <span class="panel-title">Dataset Generation</span>
+        <button class="btn btn-secondary btn-sm" onclick="loadDatasetQueue()">Queue</button>
+        <button class="btn btn-secondary btn-sm" onclick="datasetAction('analytics')">Analytics</button>
+      </div>
+      <div class="panel-content">
+        <div class="card">
+          <div class="card-title">Export Datasets</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" onclick="datasetAction('export_conversations')">Conversations</button>
+            <button class="btn btn-secondary btn-sm" onclick="datasetAction('export_retrieval')">Retrieval</button>
+            <button class="btn btn-secondary btn-sm" onclick="datasetAction('export_kg')">Knowledge Graph</button>
+            <button class="btn btn-secondary btn-sm" onclick="datasetAction('export_memory')">Memory</button>
+            <button class="btn btn-secondary btn-sm" onclick="datasetAction('hard_examples')">Hard Examples</button>
+            <button class="btn btn-primary btn-sm" onclick="datasetAction('export_all')">Export All</button>
+          </div>
+        </div>
+        <div id="ds-result"></div>
+        <div class="card" id="ds-queue-card" style="display:none">
+          <div class="card-title">Review Queue</div>
+          <div id="ds-queue"></div>
+        </div>
+        <div id="ds-analytics"></div>
+      </div>
+    </div>
+
+    <!-- ═══ GUARDRAILS ════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-guardrails">
+      <div class="panel-header">
+        <span class="panel-title">Guardrail Controls</span>
+        <button class="btn btn-secondary btn-sm" onclick="loadGuardrails()">Refresh</button>
+      </div>
+      <div class="panel-content">
+        <div class="card">
+          <div class="card-title">⚠ Hard Integrity Guards — ALWAYS ON (non-disableable)</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            File Integrity · DB Integrity · Checkpoint Integrity · Memory Integrity ·
+            Path Validation · Permission Validation · Schema Validation · Process Stability · Crash Protection
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Profile</div>
+          <div class="profile-grid" id="guardrail-profiles">
+            <div class="profile-btn" onclick="setGuardrailProfile('strict')">Strict</div>
+            <div class="profile-btn active" onclick="setGuardrailProfile('standard')">Standard</div>
+            <div class="profile-btn" onclick="setGuardrailProfile('research')">Research</div>
+            <div class="profile-btn" onclick="setGuardrailProfile('developer')">Developer</div>
+            <div class="profile-btn" onclick="setGuardrailProfile('off')">Off</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Cognitive Guards (toggleable)</div>
+          <div id="guard-toggles">Loading…</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Audit Log (recent)</div>
+          <div class="trace-box" id="guard-audit" style="max-height:150px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ COGNITION ═════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-cognition">
+      <div class="panel-header">
+        <span class="panel-title">Human Cognition Layer Controls</span>
+        <button class="btn btn-secondary btn-sm" onclick="loadCognition()">Refresh</button>
+      </div>
+      <div class="panel-content">
+        <div class="card" style="background:#16213a;border-color:#3b4f8a">
+          <div class="card-title">⚠ OFF mode only disables cognition modules. Memory, retrieval, KG, reasoning, guardrails, and tools remain fully active.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Mode</div>
+          <div class="profile-grid" id="cog-mode-btns">
+            <div class="profile-btn" onclick="setCognitionMode('full')">Full</div>
+            <div class="profile-btn" onclick="setCognitionMode('partial')">Partial</div>
+            <div class="profile-btn" onclick="setCognitionMode('custom')">Custom</div>
+            <div class="profile-btn" onclick="setCognitionMode('off')">Off</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Per-Module Toggles</div>
+          <div id="cog-toggles">Loading…</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Current State</div>
+          <div class="trace-box" id="cog-state" style="max-height:120px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ METRICS ═══════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-metrics">
+      <div class="panel-header">
+        <span class="panel-title">Observability Dashboard</span>
+        <button class="btn btn-secondary btn-sm" onclick="loadMetrics()">Refresh</button>
+        <label style="font-size:12px;color:var(--text2)">
+          <input type="checkbox" id="auto-refresh" onchange="toggleAutoRefresh(this.checked)"> Auto (5s)
+        </label>
+      </div>
+      <div class="panel-content" id="metrics-content">Loading…</div>
+    </div>
+
+    <!-- ═══ EVALUATION ════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-eval">
+      <div class="panel-header">
+        <span class="panel-title">Evaluation Suite</span>
+        <button class="btn btn-primary btn-sm" onclick="runEval('run_all')">Run All</button>
+        <button class="btn btn-secondary btn-sm" onclick="runEval('tokenizer')">Tokenizer</button>
+        <button class="btn btn-secondary btn-sm" onclick="checkGate(1)">Gate 1</button>
+        <button class="btn btn-secondary btn-sm" onclick="checkGate(3)">Gate 3</button>
+        <button class="btn btn-secondary btn-sm" onclick="checkGate(6)">Gate 6</button>
+      </div>
+      <div class="panel-content" id="eval-content">
+        <div class="msg system">Click Run All to execute the complete evaluation suite.</div>
+      </div>
+    </div>
+
+    <!-- ═══ TRAINING ══════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-training">
+      <div class="panel-header">
+        <span class="panel-title">Training Dashboard</span>
+        <button class="btn btn-secondary btn-sm" onclick="loadTrainingMetrics()">Refresh</button>
+      </div>
+      <div class="panel-content" id="training-content">
+        <div class="card">
+          <div class="card-title">Live Training Metrics</div>
+          <div id="train-metrics">No training in progress. Run: python main.py train-model data/corpus/v1/split/train.txt</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Commands</div>
+          <div class="trace-box" style="max-height:160px">
+# Train tokenizer
+python main.py train-tokenizer data/corpus/v1/split/train.txt
+
+# Train 700M decoder
+python main.py train-model data/corpus/v1/split/train.txt --steps 100000 --batch 2 --accum 16 --precision bf16
+
+# Evaluate
+python main.py eval --all data/corpus/v1/split/val.txt
+
+# Check phase gate
+python main.py gate 1
+python main.py gate 3
+python main.py gate 6</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ── State ─────────────────────────────────────────────────────────
+const S = { key: null, session: 'default_'+Math.random().toString(36).slice(2,8),
+            autoRefreshTimer: null, lastTrace: null }
+
+// ── Boot ──────────────────────────────────────────────────────────
+async function boot() {
+  const r = await fetch('/api/auth-key')
+  const d = await r.json()
+  S.key = d.key
+  refreshStatus()
+  setInterval(refreshStatus, 15000)
+}
+
+async function api(endpoint, method='GET', body=null) {
+  const opts = { method, headers: { 'X-CognitiveOC-Key': S.key, 'Content-Type':'application/json' } }
+  if (body) opts.body = JSON.stringify(body)
+  const r = await fetch(endpoint, opts)
+  return r.json().catch(() => ({}))
+}
+
+// ── Tab switching ─────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'))
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+  const tabs = document.querySelectorAll('.tab')
+  const tabMap = { chat:0,memory:1,retrieval:2,kg:3,workflow:4,research:5,validation:6,dataset:7,guardrails:8,cognition:9,metrics:10,eval:11,training:12 }
+  if (tabMap[name] !== undefined) tabs[tabMap[name]].classList.add('active')
+  const p = document.getElementById('panel-'+name)
+  if (p) p.classList.add('active')
+  // Lazy load
+  if (name==='memory')       loadMemories()
+  if (name==='kg')           loadKG()
+  if (name==='workflow')     loadWorkflows()
+  if (name==='research')     loadResearch()
+  if (name==='retrieval')    loadRetrievalStats()
+  if (name==='guardrails')   loadGuardrails()
+  if (name==='cognition')    loadCognition()
+  if (name==='metrics')      loadMetrics()
+  if (name==='training')     loadTrainingMetrics()
+}
+
+// ── Status ────────────────────────────────────────────────────────
+async function refreshStatus() {
+  try {
+    const d = await api('/api/status')
+    const dot = document.getElementById('status-dot')
+    dot.className = 'dot online'
+    document.getElementById('status-text').textContent = 'online'
+    document.getElementById('backend-text').textContent = d.backend || ''
+    // Sidebar badges
+    const ms = d.memory || {}
+    document.getElementById('sb-memory').textContent = (ms.active || '—')
+    const kg = d.kg || {}
+    document.getElementById('sb-kg').textContent = (kg.triples || '—')
+    const gs = d.guardrails || {}
+    document.getElementById('sb-guards').textContent = gs._profile || 'standard'
+    const cs = d.cognition || {}
+    document.getElementById('sb-cognition').textContent = cs.mode || 'full'
+    document.getElementById('sb-status').textContent = 'OK'
+    document.getElementById('sb-status').className = 'badge ok'
+  } catch(e) {
+    document.getElementById('status-dot').className = 'dot'
+    document.getElementById('status-text').textContent = 'offline'
+    document.getElementById('sb-status').className = 'badge err'
+    document.getElementById('sb-status').textContent = 'ERR'
+  }
+}
+
+// ── Chat ──────────────────────────────────────────────────────────
+function addMsg(role, text, meta) {
+  const area = document.getElementById('chat-messages')
+  const div  = document.createElement('div')
+  div.className = 'msg ' + role
+  div.innerHTML = `<div>${escHtml(text)}</div>`
+  if (meta) div.innerHTML += `<div class="meta">${meta}</div>`
+  area.appendChild(div)
+  area.scrollTop = area.scrollHeight
+  return div
+}
+
+async function sendChat() {
+  const inp = document.getElementById('chat-in')
+  const msg = inp.value.trim()
+  if (!msg) return
+  inp.value = ''
+  addMsg('user', msg)
+  document.getElementById('chat-status').textContent = 'generating…'
+  const placeholder = addMsg('assistant', '…')
+  try {
+    const resp = await fetch('/api/stream', {
+      method:'POST',
+      headers:{'X-CognitiveOC-Key':S.key,'Content-Type':'application/json'},
+      body: JSON.stringify({message:msg, session:S.session})
+    })
+    const reader = resp.body.getReader()
+    const dec    = new TextDecoder()
+    let text = '', done = false
+    while(!done) {
+      const {value, done:d} = await reader.read()
+      done = d
+      if (value) {
+        const chunk = dec.decode(value)
+        for (const line of chunk.split('\n')) {
+          if (!line.startsWith('data:')) continue
+          try {
+            const ev = JSON.parse(line.slice(5))
+            if (ev.fragment) { text += ev.fragment; placeholder.firstChild.textContent = text }
+            if (ev.done && ev.trace) {
+              S.lastTrace = ev.trace
+              placeholder.innerHTML += `<div class="meta">intent=${ev.trace.intent||''} | mode=${ev.trace.retrieval_mode||''} | conf=${ev.trace.retrieval_conf||0} | ${ev.trace.latency_ms||0}ms</div>`
+              if (document.getElementById('show-trace').checked) {
+                const tb = document.getElementById('chat-trace')
+                tb.style.display = 'block'
+                tb.textContent = JSON.stringify(ev.trace, null, 2)
+              }
+            }
+          } catch(_) {}
+        }
+      }
+    }
+  } catch(e) { placeholder.firstChild.textContent = 'Error: '+e.message }
+  document.getElementById('chat-status').textContent = ''
+}
+
+async function uploadFile(input) {
+  const file = input.files[0]
+  if (!file) return
+  const dest = 'var/uploads/' + file.name
+  const r    = await api('/api/upload','POST',{path:dest})
+  addMsg('system', r.ok ? `✓ Ingested: ${file.name} (${r.added||0} chunks, ${r.kg_triples||0} KG triples)` : `✗ ${r.error||'upload failed'}`)
+  input.value = ''
+}
+
+function showStatus() { switchTab('metrics') }
+function showAuthKey() { alert('Auth key: ' + S.key) }
+function clearSession() {
+  S.session = 'default_'+Math.random().toString(36).slice(2,8)
+  document.getElementById('chat-messages').innerHTML = '<div class="msg system">Session cleared.</div>'
+}
+
+// ── Memory ────────────────────────────────────────────────────────
+async function loadMemories() {
+  const list = document.getElementById('mem-list')
+  list.textContent = 'Loading…'
+  const r = await api('/api/memories')
+  if (!Array.isArray(r)) { list.textContent = 'Error loading memories'; return }
+  if (!r.length) { list.textContent = 'No memories stored.'; return }
+  list.innerHTML = r.map(m=>`
+    <div class="item-row">
+      <div class="item-text">${escHtml(m.text||'').slice(0,200)}</div>
+      <div class="item-meta">[${m.kind||'fact'}] importance=${m.importance} id=${m.id}
+        <button class="btn btn-secondary btn-sm" style="margin-left:8px" onclick="forgetMemory(${m.id})">Forget</button>
+      </div>
+    </div>`).join('')
+}
+
+async function searchMemory(q) {
+  if (!q) return loadMemories()
+  const r = await api('/api/memory','POST',{action:'search',query:q,limit:20})
+  const list = document.getElementById('mem-list')
+  list.innerHTML = (r||[]).map(m=>`
+    <div class="item-row">
+      <div class="item-text">${escHtml(m.text||'').slice(0,200)}</div>
+      <div class="item-meta">[${m.kind||'fact'}] id=${m.id}</div>
+    </div>`).join('') || 'No results.'
+}
+
+async function forgetMemory(id) {
+  if (!confirm('Delete memory '+id+'?')) return
+  await api('/api/memory','POST',{action:'forget',id})
+  loadMemories()
+}
+
+async function consolidateMemory() {
+  const r = await api('/api/memory','POST',{action:'consolidate'})
+  alert(`Consolidated: ${r.removed||0} duplicates removed`)
+  loadMemories()
+}
+
+async function decayMemory() {
+  const r = await api('/api/memory','POST',{action:'decay'})
+  alert(`Decay: ${r.archived||0} memories archived`)
+  loadMemories()
+}
+
+// ── KG ────────────────────────────────────────────────────────────
+async function loadKG() {
+  const r = await api('/api/kg')
+  document.getElementById('kg-content').innerHTML = `
+    <div class="grid-3" style="margin-bottom:12px">
+      <div class="metric"><div class="metric-label">Triples</div><div class="metric-value">${r.total_triples||0}</div></div>
+      <div class="metric"><div class="metric-label">Entities</div><div class="metric-value">${r.total_entities||0}</div></div>
+      <div class="metric"><div class="metric-label">Avg Confidence</div><div class="metric-value">${(r.avg_confidence||0).toFixed(2)}</div></div>
+    </div>
+    <div id="kg-results"></div>`
+}
+
+async function kgSearch() {
+  const q = document.getElementById('kg-search').value.trim()
+  if (!q) return
+  const r = await api('/api/kg','POST',{action:'search',query:q})
+  document.getElementById('kg-results').innerHTML = (r||[]).map(t=>`
+    <div class="item-row">
+      <div class="item-text"><b>${escHtml(t.subject)}</b> → ${escHtml(t.relation)} → <b>${escHtml(t.object)}</b></div>
+      <div class="item-meta">conf=${t.confidence} id=${t.id}</div>
+    </div>`).join('') || '<div class="msg system">No results.</div>'
+}
+
+async function kgAction(action) {
+  const r  = await api('/api/kg','POST',{action})
+  const el = document.getElementById('kg-results') || document.getElementById('kg-content')
+  if (!el) return
+  el.innerHTML = `<div class="trace-box" style="max-height:300px">${escHtml(JSON.stringify(r,null,2))}</div>`
+}
+
+// ── Retrieval ────────────────────────────────────────────────────
+async function loadRetrievalStats() {
+  const r = await api('/api/retrieval-stats')
+  document.getElementById('ret-stats').innerHTML = `
+    <div class="grid-3">
+      <div class="metric"><div class="metric-label">Hit Rate</div><div class="metric-value">${(r.hit_rate||0).toFixed(2)}</div></div>
+      <div class="metric"><div class="metric-label">Misses</div><div class="metric-value">${r.misses||0}</div></div>
+      <div class="metric"><div class="metric-label">Hard Examples</div><div class="metric-value">${r.hard_examples||0}</div></div>
+    </div>`
+}
+
+async function retAction(action) {
+  const r = await api('/api/retrieval-improve','POST',{action})
+  document.getElementById('ret-result').textContent = JSON.stringify(r,null,2)
+}
+
+// ── Workflows ────────────────────────────────────────────────────
+async function loadWorkflows() {
+  const r = await api('/api/workflow','POST',{action:'list'})
+  const el = document.getElementById('wf-list')
+  if (!r||!r.length) { el.innerHTML='<div class="msg system">No workflows.</div>'; return }
+  el.innerHTML = r.map(wf=>`
+    <div class="item-row">
+      <div class="item-text"><b>${escHtml(wf.goal||'')}</b></div>
+      <div class="item-meta">
+        <span class="state-${wf.state}">${wf.state}</span>
+        | ${wf.steps_done||0}/${wf.steps_total||0} steps | ${wf.progress_pct||0}%
+        | <button class="btn btn-secondary btn-sm" onclick="wfStatus('${wf.id}')">Status</button>
+        <button class="btn btn-secondary btn-sm" onclick="wfCancel('${wf.id}')">Cancel</button>
+        <button class="btn btn-secondary btn-sm" onclick="wfResume('${wf.id}')">Resume</button>
+      </div>
+    </div>`).join('')
+}
+
+async function createWorkflow() {
+  const goal = document.getElementById('wf-goal').value.trim()
+  if (!goal) return
+  const r = await api('/api/workflow','POST',{action:'create',goal,session:S.session})
+  if (r.id) {
+    await api('/api/workflow','POST',{action:'run',id:r.id})
+    document.getElementById('wf-goal').value = ''
+    setTimeout(loadWorkflows,500)
+  }
+}
+
+async function wfStatus(id) {
+  const r = await api('/api/workflow','POST',{action:'status',id})
+  alert(JSON.stringify(r,null,2))
+}
+
+async function wfCancel(id) {
+  await api('/api/workflow','POST',{action:'cancel',id})
+  loadWorkflows()
+}
+
+async function wfResume(id) {
+  await api('/api/workflow','POST',{action:'resume',id})
+  setTimeout(loadWorkflows,500)
+}
+
+// ── Research ─────────────────────────────────────────────────────
+async function loadResearch() {
+  const r = await api('/api/research','POST',{action:'list'})
+  const el = document.getElementById('re-list')
+  if (!r||!r.length) { el.innerHTML='<div class="msg system">No research tasks.</div>'; return }
+  el.innerHTML = r.map(wf=>`
+    <div class="item-row">
+      <div class="item-text"><b>${escHtml(wf.goal||'')}</b></div>
+      <div class="item-meta">
+        <span class="state-${wf.state}">${wf.state}</span>
+        <button class="btn btn-secondary btn-sm" style="margin-left:8px" onclick="getReport('${wf.id}')">Report</button>
+      </div>
+    </div>`).join('')
+}
+
+async function startResearch() {
+  const q = document.getElementById('re-question').value.trim()
+  if (!q) return
+  await api('/api/research','POST',{action:'start',question:q,session:S.session})
+  document.getElementById('re-question').value = ''
+  setTimeout(loadResearch,500)
+}
+
+async function getReport(id) {
+  const r = await api('/api/research','POST',{action:'report',id})
+  const el = document.getElementById('re-list')
+  el.innerHTML = `<div class="trace-box" style="max-height:400px">${escHtml(r.report||'No report yet.')}</div>` + el.innerHTML
+}
+
+// ── Validation ────────────────────────────────────────────────────
+async function runValidation() {
+  const response = document.getElementById('val-response').value.trim()
+  const query    = document.getElementById('val-query').value.trim()
+  if (!response) return
+  const r   = await api('/api/validate','POST',{response,query})
+  const col = r.passed ? 'var(--green)' : r.should_warn ? 'var(--yellow)' : 'var(--red)'
+  document.getElementById('val-result').innerHTML = `
+    <div class="card" style="border-color:${col}">
+      <div class="card-title">Result: <span style="color:${col}">${r.passed?'PASS':'WARN/FAIL'}</span>  Score: ${r.score}</div>
+      ${(r.checks||[]).map(c=>`
+        <div class="toggle-row">
+          <div><div class="toggle-label">${c.check}</div><div class="toggle-sub">${c.detail||''}</div></div>
+          <span style="color:${c.passed?'var(--green)':'var(--red)'}">${c.passed?'PASS':'FAIL'} ${c.score.toFixed(2)}</span>
+        </div>`).join('')}
+    </div>`
+}
+
+async function loadLastValidation() {
+  const r = await api('/api/validation/last')
+  if (!r || !r.checks) { document.getElementById('val-result').innerHTML = '<div class="msg system">No recent validation result.</div>'; return }
+  document.getElementById('val-result').innerHTML = `<div class="trace-box" style="max-height:300px">${escHtml(JSON.stringify(r,null,2))}</div>`
+}
+
+// ── Dataset ───────────────────────────────────────────────────────
+async function datasetAction(action) {
+  const r = await api('/api/dataset','POST',{action})
+  const el = document.getElementById('ds-result')
+  if (action==='analytics') {
+    el.innerHTML = `<div class="card">
+      <div class="card-title">Feedback Analytics</div>
+      <div class="grid-2">
+        <div class="metric"><div class="metric-label">Total Feedback</div><div class="metric-value">${r.total_feedback||0}</div></div>
+        <div class="metric"><div class="metric-label">Positive Rate</div><div class="metric-value">${((r.positive_rate||0)*100).toFixed(1)}%</div></div>
+      </div>
+    </div>`
+  } else {
+    el.innerHTML = `<div class="item-row">
+      <div class="item-text">${action.replace('_',' ')}: ${r.records||r.count||0} records</div>
+      <div class="item-meta">${r.path||r.note||''}</div>
+    </div>`
+  }
+}
+
+async function loadDatasetQueue() {
+  const r = await api('/api/dataset','POST',{action:'queue'})
+  const card = document.getElementById('ds-queue-card')
+  const el   = document.getElementById('ds-queue')
+  card.style.display = 'block'
+  if (!r||!r.length) { el.innerHTML='<div class="msg system">Review queue is empty.</div>'; return }
+  el.innerHTML = r.slice(0,10).map(e=>`
+    <div class="item-row">
+      <div class="item-text">${e.type} — ${e.records||0} records</div>
+      <div class="item-meta">${e.path||''} | reviewed=${e.reviewed}</div>
+    </div>`).join('')
+}
+
+// ── Guardrails ────────────────────────────────────────────────────
+async function loadGuardrails() {
+  const r = await api('/api/guardrail-state')
+  // Update profile buttons
+  document.querySelectorAll('#guardrail-profiles .profile-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === (r._profile||'standard'))
+  })
+  // Build toggles
+  const guards = Object.entries(r).filter(([k])=>!k.startsWith('_'))
+  document.getElementById('guard-toggles').innerHTML = guards.map(([k,v])=>`
+    <div class="toggle-row">
+      <div class="toggle-label">${k.replace(/_/g,' ')}</div>
+      <label class="toggle">
+        <input type="checkbox" ${v?'checked':''} onchange="toggleGuard('${k}',this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>`).join('') || 'Loading…'
+}
+
+function setGuardrailProfile(profile) {
+  api('/api/guardrail-profile','POST',{profile}).then(()=>loadGuardrails())
+}
+
+function toggleGuard(guard, enabled) {
+  api('/api/guardrail-toggle','POST',{guard,enabled}).then(()=>loadGuardrails())
+}
+
+// ── Cognition ─────────────────────────────────────────────────────
+async function loadCognition() {
+  const r = await api('/api/cognition-state')
+  // Mode buttons
+  document.querySelectorAll('#cog-mode-btns .profile-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === (r.mode||'full'))
+  })
+  // Module toggles
+  const mods = r.modules || {}
+  document.getElementById('cog-toggles').innerHTML = Object.entries(mods).map(([k,v])=>`
+    <div class="toggle-row">
+      <div class="toggle-label">${k.replace(/_/g,' ')}</div>
+      <label class="toggle">
+        <input type="checkbox" ${v?'checked':''} onchange="toggleCognitionModule('${k}',this.checked)">
+        <span class="slider"></span>
+      </label>
+    </div>`).join('') || 'Loading…'
+  document.getElementById('cog-state').textContent = JSON.stringify(r, null, 2)
+}
+
+function setCognitionMode(mode) {
+  api('/api/cognition-mode','POST',{mode}).then(()=>loadCognition())
+}
+
+function toggleCognitionModule(module, enabled) {
+  api('/api/cognition-toggle','POST',{module,enabled}).then(()=>loadCognition())
+}
+
+// ── Metrics ───────────────────────────────────────────────────────
+async function loadMetrics() {
+  const r   = await api('/api/metrics')
+  const hw  = r.hardware || {}
+  const req = r.requests || {}
+  const ret = r.retrieval || {}
+  const tr  = r.training  || {}
+  document.getElementById('metrics-content').innerHTML = `
+    <div class="card">
+      <div class="card-title">Hardware</div>
+      <div class="grid-3">
+        <div class="metric"><div class="metric-label">CPU %</div><div class="metric-value">${hw.cpu_pct||0}%</div></div>
+        <div class="metric"><div class="metric-label">RAM</div><div class="metric-value">${hw.ram_used_gb||0}GB</div><div class="metric-sub">of ${hw.ram_total_gb||0}GB</div></div>
+        <div class="metric"><div class="metric-label">GPU VRAM</div><div class="metric-value">${hw.gpu_used_mb||0}MB</div><div class="metric-sub">of ${hw.gpu_total_mb||0}MB</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Requests</div>
+      <div class="grid-3">
+        <div class="metric"><div class="metric-label">Total</div><div class="metric-value">${req.total||0}</div></div>
+        <div class="metric"><div class="metric-label">Avg Latency</div><div class="metric-value">${req.avg_latency_ms||0}ms</div></div>
+        <div class="metric"><div class="metric-label">Errors</div><div class="metric-value" style="color:var(--red)">${req.errors||0}</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Retrieval</div>
+      <div class="grid-3">
+        <div class="metric"><div class="metric-label">Hit Rate</div><div class="metric-value">${(ret.hit_rate||0).toFixed(2)}</div></div>
+        <div class="metric"><div class="metric-label">Cache Hit</div><div class="metric-value">${(ret.cache_hit_rate||0).toFixed(2)}</div></div>
+        <div class="metric"><div class="metric-label">Multi-hop</div><div class="metric-value">${(ret.multi_hop_rate||0).toFixed(2)}</div></div>
+      </div>
+    </div>
+    ${tr.step ? `<div class="card">
+      <div class="card-title">Live Training</div>
+      <div class="grid-3">
+        <div class="metric"><div class="metric-label">Step</div><div class="metric-value">${tr.step||0}</div></div>
+        <div class="metric"><div class="metric-label">Perplexity</div><div class="metric-value">${tr.perplexity||'—'}</div></div>
+        <div class="metric"><div class="metric-label">Tok/s</div><div class="metric-value">${tr.tokens_per_sec||0}</div></div>
+      </div>
+    </div>` : ''}`
+}
+
+function toggleAutoRefresh(on) {
+  if (on) {
+    S.autoRefreshTimer = setInterval(loadMetrics, 5000)
+  } else {
+    clearInterval(S.autoRefreshTimer)
+  }
+}
+
+// ── Evaluation ────────────────────────────────────────────────────
+async function runEval(action) {
+  document.getElementById('eval-content').innerHTML = '<div class="msg system">Running evaluation… this may take a few minutes.</div>'
+  const r = await api('/api/eval','POST',{action})
+  document.getElementById('eval-content').innerHTML = `<div class="trace-box" style="max-height:500px">${escHtml(JSON.stringify(r,null,2))}</div>`
+}
+
+async function checkGate(phase) {
+  const r = await api('/api/eval','POST',{action:'gate',phase})
+  const col = r.passed ? 'var(--green)' : 'var(--red)'
+  document.getElementById('eval-content').innerHTML = `
+    <div class="card" style="border-color:${col}">
+      <div class="card-title">Phase ${phase} Gate: <span style="color:${col}">${r.passed?'PASS':'FAIL'}</span> (${r.n_pass||0}/${r.n_total||0})</div>
+      ${(r.checks||[]).map(c=>`
+        <div class="toggle-row">
+          <div><div class="toggle-label">${c.metric} ${c.op} ${c.threshold}</div>
+               <div class="toggle-sub">${c.detail||''}</div></div>
+          <span style="color:${c.passed?'var(--green)':'var(--red)'}">${c.passed?'✓':'✗'}</span>
+        </div>`).join('')}
+    </div>` + document.getElementById('eval-content').innerHTML
+}
+
+// ── Training ──────────────────────────────────────────────────────
+async function loadTrainingMetrics() {
+  const r  = await api('/api/metrics')
+  const tr = r.training || {}
+  const el = document.getElementById('train-metrics')
+  if (!tr.step) {
+    el.innerHTML = 'No training in progress. Start training from the command line.'
+    return
+  }
+  el.innerHTML = `
+    <div class="grid-3">
+      <div class="metric"><div class="metric-label">Step</div><div class="metric-value">${tr.step}</div></div>
+      <div class="metric"><div class="metric-label">Train Loss</div><div class="metric-value">${tr.train_loss}</div></div>
+      <div class="metric"><div class="metric-label">Val Loss</div><div class="metric-value">${tr.val_loss||'—'}</div></div>
+      <div class="metric"><div class="metric-label">Perplexity</div><div class="metric-value">${tr.perplexity||'—'}</div></div>
+      <div class="metric"><div class="metric-label">Grad Norm</div><div class="metric-value">${tr.grad_norm||'—'}</div></div>
+      <div class="metric"><div class="metric-label">Tok/s</div><div class="metric-value">${tr.tokens_per_sec||0}</div></div>
+    </div>`
+}
+
+// ── Utilities ─────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+}
+
+boot()
+</script>
+</body>
+</html>

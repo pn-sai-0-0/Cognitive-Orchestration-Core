@@ -1,0 +1,67 @@
+{
+  "passed": false,
+  "score": 0.639,
+  "should_warn": true,
+  "should_block": false,
+  "checks": [
+    {
+      "check": "fact_check",
+      "passed": false,
+      "score": 0.0,
+      "detail": "0/1 claims grounded in evidence",
+      "evidence": [],
+      "warnings": [],
+      "latency_ms": 0.2
+    },
+    {
+      "check": "citation_check",
+      "passed": true,
+      "score": 1.0,
+      "detail": "no citations in response",
+      "evidence": [],
+      "warnings": [],
+      "latency_ms": 0.0
+    },
+    {
+      "check": "kg_check",
+      "passed": false,
+      "score": 0.5,
+      "detail": "2 potential KG contradictions in response",
+      "evidence": [],
+      "warnings": [
+        "{'subject': 'python', 'relation': 'is', 'objects': ['programming language', 'programming language used for machine learning\\n**known facts'], 'confs': [0.87, 0.7], 'resolution': 'programming language'}",
+        "{'subject': 'python', 'relation': 'part_of', 'objects': ['machine learning tools', 'programming languages'], 'confs': [0.85, 0.85], 'resolution': 'machine learning tools'}"
+      ],
+      "latency_ms": 0.1
+    },
+    {
+      "check": "memory_check",
+      "passed": true,
+      "score": 1.0,
+      "detail": "no memories to check against",
+      "evidence": [],
+      "warnings": [],
+      "latency_ms": 0.0
+    },
+    {
+      "check": "reasoning_check",
+      "passed": true,
+      "score": 0.333,
+      "detail": "query coverage=0.33  reasoning_issues=0",
+      "evidence": [],
+      "warnings": [],
+      "latency_ms": 0.0
+    },
+    {
+      "check": "output_check",
+      "passed": true,
+      "score": 1.0,
+      "detail": "words=5",
+      "evidence": [],
+      "warnings": [],
+      "latency_ms": 0.0
+    }
+  ],
+  "ts": "2026-06-21T17:11:09",
+  "query": "Why use Python?"
+}

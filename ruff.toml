@@ -1,0 +1,52 @@
+# Repo-owned Ruff configuration for the verified stack cleanup pass.
+#
+# `force-exclude = true` ensures explicit CLI paths still honor these
+# exclusions, so `ruff check config.py main.py` verifies the intended
+# exclusions instead of linting legacy out-of-scope files.
+line-length = 88
+target-version = "py313"
+force-exclude = true
+
+extend-exclude = [
+  "config.py",  # legacy configuration module; excluded intentionally
+  "main.py",  # legacy entry point; excluded intentionally
+  "api",
+  "audit",
+  "cognition",
+  "corpus",
+  "data",
+  "dataset",
+  "docs",
+  "encoder",
+  "eval",
+  "governance",
+  "inference",
+  "knowledge",
+  "memory",
+  "models",
+  "observability",
+  "perception",
+  "release",
+  "research",
+  "retrieval",
+  "safety",
+  "scripts",
+  "tokenizer",
+  "tools",
+  "train",
+  "ui",
+  "validation",
+  "vision",
+  "workflow",
+]
+
+[lint]
+select = [
+  "E",
+  "F",
+  "I",
+  "UP",
+  "FURB",
+  "BLE",
+  "PERF",
+]
